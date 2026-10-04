@@ -1,0 +1,1086 @@
+/* ==========================================================================
+   FangCoin – Dark bank theme
+   ========================================================================== */
+
+.fangcoin-app {
+    max-width: 780px;
+    margin: 0 auto;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #0d0d0d !important;
+    min-height: 80vh;
+}
+
+.fc-wrap {
+    background: #0d0d0d;
+    border-radius: 12px;
+    overflow: hidden;
+    color: #e8e8e8;
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ----- Sidebar (becomes top bar on mobile) ----- */
+
+.fc-sidebar {
+    padding: 20px 16px 16px;
+    background: #0a0a0a;
+}
+
+.fc-sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.fc-brand-icon {
+    width: 30px;
+    height: 30px;
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Arial Black", Arial, sans-serif;
+    font-weight: 900;
+    font-size: 11px;
+    letter-spacing: -2px;
+    color: #e8e8e8;
+    flex-shrink: 0;
+}
+
+.fc-brand-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #e8e8e8;
+}
+
+.fc-char-select {
+    width: 100%;
+    background: #1a1a1a;
+    border: 0.5px solid #2a2a2a;
+    border-radius: 8px;
+    padding: 9px 12px;
+    color: #e8e8e8;
+    font-size: 13px;
+    font-family: inherit;
+    -webkit-appearance: none;
+    appearance: none;
+    margin-bottom: 16px;
+}
+
+/* Balance */
+.fc-bal {
+    text-align: center;
+    padding: 8px 0 16px;
+}
+
+.fc-bal-coin {
+    display: none;
+}
+
+.fc-bal-num {
+    font-size: 32px;
+    font-weight: 500;
+    color: #e8e8e8;
+    margin: 0;
+    line-height: 1;
+}
+
+.fc-bal-label {
+    font-size: 11px;
+    color: #555;
+    margin: 4px 0 0;
+}
+
+/* Nav buttons */
+.fc-btns {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.fc-nav-btn {
+    flex: 1;
+    padding: 10px 0;
+    font-size: 13px;
+    font-weight: 500;
+    border: 0.5px solid #2a2a2a;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-family: inherit;
+    background: #1a1a1a;
+    color: #e8e8e8;
+    transition: background 0.15s;
+}
+
+.fc-nav-btn:hover {
+    background: #222;
+}
+
+/* Income / spending */
+.fc-flow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: #1a1a1a;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.fc-flow-cell {
+    background: #0d0d0d;
+    padding: 10px 12px;
+}
+
+.fc-flow-label {
+    font-size: 11px;
+    color: #555;
+    margin-bottom: 2px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.fc-flow-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.fc-flow-val {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.fc-flow-period {
+    font-size: 10px;
+    color: #444;
+    text-align: center;
+    margin-top: 4px;
+}
+
+/* ----- Content body ----- */
+
+.fc-body {
+    background: #111;
+    border-top: 0.5px solid #1a1a1a;
+    padding: 20px 16px;
+    flex: 1;
+}
+
+/* View panels */
+.fc-view { display: none; }
+.fc-view.active { display: block; }
+
+/* Section headers */
+.fc-sec-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.fc-sec-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: #666;
+}
+
+.fc-view-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: #ccc;
+    margin: 0 0 16px;
+}
+
+/* Transaction rows */
+.fc-tx {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 0.5px solid #1a1a1a;
+}
+
+.fc-tx:last-child { border-bottom: none; }
+
+.fc-tx-ico {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+}
+
+.fc-tx-ico-in { background: #1a2e1a; color: #4ade80; }
+.fc-tx-ico-out { background: #2e1a1a; color: #f87171; }
+.fc-tx-ico-qr { background: #1a1a2e; color: #818cf8; }
+.fc-tx-ico-mint { background: #2e2a1a; color: #fbbf24; }
+
+.fc-tx-info { flex: 1; min-width: 0; }
+.fc-tx-name { font-size: 13px; color: #e8e8e8; margin: 0; font-weight: 500; }
+.fc-tx-meta { font-size: 11px; color: #555; margin: 0; }
+.fc-tx-amt { font-size: 13px; font-weight: 500; white-space: nowrap; }
+.fc-tx-in { color: #4ade80; }
+.fc-tx-out { color: #f87171; }
+
+/* Cards */
+.fc-card {
+    background: #0d0d0d;
+    border-radius: 8px;
+    padding: 14px;
+    margin-bottom: 14px;
+}
+
+.fc-card-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: #ccc;
+    margin: 0 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.fc-card-help {
+    font-size: 13px;
+    color: #666;
+    margin: 0 0 14px;
+    line-height: 1.5;
+}
+
+/* Form elements */
+.fc-label { font-size: 12px; color: #555; margin-bottom: 5px; }
+
+.fc-input {
+    width: 100%;
+    background: #1a1a1a;
+    border: 0.5px solid #2a2a2a;
+    border-radius: 6px;
+    padding: 10px 12px;
+    color: #e8e8e8;
+    font-size: 14px;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.fc-input:focus { outline: none; border-color: #444; }
+.fc-input-mono { font-family: "SF Mono", "Consolas", "Monaco", monospace; }
+.fc-input-lg { font-size: 18px; text-align: center; }
+
+.fc-fieldset { margin-bottom: 14px; }
+
+.fc-submit {
+    width: 100%;
+    padding: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-family: inherit;
+    background: #e8e8e8;
+    color: #0d0d0d;
+    transition: opacity 0.15s;
+}
+
+.fc-submit:hover { opacity: 0.9; }
+.fc-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Info box */
+.fc-info-box {
+    background: #0d0d0d;
+    border-radius: 8px;
+    padding: 12px 14px;
+    display: flex;
+    gap: 10px;
+    margin-bottom: 14px;
+    align-items: flex-start;
+}
+
+.fc-info-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    background: #1a1a2e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #818cf8;
+    font-size: 16px;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+/* Print format selector */
+.fc-fmt-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.fc-fmt-opt {
+    background: #1a1a1a;
+    border: 0.5px solid #2a2a2a;
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.fc-fmt-opt.selected { border-color: #4ade80; }
+.fc-fmt-label { font-size: 13px; color: #e8e8e8; font-weight: 500; }
+.fc-fmt-sub { font-size: 11px; color: #555; margin-top: 2px; }
+
+/* Verify / deposit */
+.fc-verify-row { display: flex; gap: 8px; }
+.fc-verify-row input { flex: 1; }
+
+.fc-verify-btn {
+    padding: 10px 14px;
+    background: #1a1a1a;
+    border: 0.5px solid #2a2a2a;
+    border-radius: 6px;
+    color: #e8e8e8;
+    font-size: 13px;
+    cursor: pointer;
+    white-space: nowrap;
+    font-family: inherit;
+    font-weight: 500;
+}
+
+.fc-deposit-btn { background: #1a3a1a; border-color: #2a4a2a; color: #4ade80; }
+
+.fc-verify-result { margin-top: 10px; min-height: 20px; }
+
+.fc-verify-status {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.fc-status-valid { background: #1a2e1a; color: #4ade80; }
+.fc-status-redeemed { background: #2e1a1a; color: #f87171; }
+.fc-status-invalid { background: #1a1a1a; color: #666; }
+
+/* Messages */
+.fc-msg { margin-top: 12px; font-size: 13px; min-height: 20px; }
+.fc-msg-success { color: #4ade80; }
+.fc-msg-error { color: #f87171; }
+
+.fc-two-col { display: grid; grid-template-columns: 1fr; gap: 0; }
+.fc-send-row { display: grid; grid-template-columns: 1fr; gap: 0; }
+.fc-empty { font-size: 13px; color: #555; padding: 16px 0; text-align: center; }
+
+/* ==========================================================================
+   Theme override layer - ID-scoped !important to beat aggressive themes
+   ========================================================================== */
+
+#fangcoin-app,
+#fangcoin-app.fc-wrap {
+    background: #0d0d0d !important;
+    color: #e8e8e8 !important;
+}
+
+#fangcoin-app .fc-sidebar {
+    background: #0a0a0a !important;
+}
+
+#fangcoin-app .fc-body {
+    background: #111 !important;
+}
+
+#fangcoin-app .fc-card {
+    background: #0d0d0d !important;
+    color: #e8e8e8 !important;
+}
+
+#fangcoin-app .fc-card * {
+    box-sizing: border-box;
+}
+
+#fangcoin-app .fc-input,
+#fangcoin-app .fc-char-select,
+#fangcoin-app select {
+    background: #1a1a1a !important;
+    color: #e8e8e8 !important;
+    border-color: #2a2a2a !important;
+}
+
+#fangcoin-app .fc-flow-cell {
+    background: #0d0d0d !important;
+}
+
+#fangcoin-app .fc-nav-btn,
+#fangcoin-app .fc-verify-btn,
+#fangcoin-app .fc-scan-btn,
+#fangcoin-app .fc-fmt-opt {
+    background: #1a1a1a !important;
+    color: #e8e8e8 !important;
+}
+
+#fangcoin-app .fc-fmt-opt.selected {
+    border-color: #4ade80 !important;
+}
+
+#fangcoin-app .fc-deposit-btn {
+    background: #1a3a1a !important;
+    color: #4ade80 !important;
+}
+
+#fangcoin-app .fc-submit {
+    background: #e8e8e8 !important;
+    color: #0d0d0d !important;
+    border: none !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    font-family: inherit !important;
+}
+
+#fangcoin-app .fc-submit:hover {
+    opacity: 0.9 !important;
+}
+
+#fangcoin-app .fc-submit:disabled {
+    opacity: 0.4 !important;
+    cursor: not-allowed !important;
+}
+
+#fangcoin-app .fc-address-copy {
+    background: #1a1a1a !important;
+    color: #888 !important;
+    border: 0.5px solid #2a2a2a !important;
+}
+
+#fangcoin-app .fc-address-copy:hover {
+    color: #e8e8e8 !important;
+    background: #222 !important;
+}
+
+#fangcoin-app .fc-address-copy.copied {
+    color: #4ade80 !important;
+    border-color: #2a4a2a !important;
+}
+
+#fangcoin-app .fc-nav-btn:hover,
+#fangcoin-app .fc-verify-btn:hover,
+#fangcoin-app .fc-scan-btn:hover {
+    background: #222 !important;
+    color: #e8e8e8 !important;
+}
+
+#fangcoin-app .fc-scan-btn {
+    color: #888 !important;
+}
+
+#fangcoin-app .fc-bal-num,
+#fangcoin-app .fc-brand-name {
+    color: #e8e8e8 !important;
+}
+
+#fangcoin-app .fc-bal-label {
+    color: #555 !important;
+}
+
+#fangcoin-app .fc-sec-title {
+    color: #666 !important;
+}
+
+#fangcoin-app .fc-view-title {
+    color: #ccc !important;
+}
+
+#fangcoin-app .fc-card-title {
+    color: #ccc !important;
+}
+
+#fangcoin-app .fc-card-help {
+    color: #666 !important;
+}
+
+#fangcoin-app .fc-label {
+    color: #555 !important;
+}
+
+#fangcoin-app .fc-tx-name {
+    color: #e8e8e8 !important;
+}
+
+#fangcoin-app .fc-tx-meta {
+    color: #555 !important;
+}
+
+#fangcoin-app .fc-tx {
+    border-bottom-color: #1a1a1a !important;
+}
+
+#fangcoin-app .fc-verify-status.fc-status-valid {
+    background: #1a2e1a !important;
+    color: #4ade80 !important;
+}
+
+#fangcoin-app .fc-verify-status.fc-status-redeemed {
+    background: #2e1a1a !important;
+    color: #f87171 !important;
+}
+
+#fangcoin-app .fc-verify-status.fc-status-invalid {
+    background: #1a1a1a !important;
+    color: #666 !important;
+}
+
+#fangcoin-app .fc-msg-success {
+    color: #4ade80 !important;
+}
+
+#fangcoin-app .fc-msg-error {
+    color: #f87171 !important;
+}
+
+#fangcoin-app .fc-empty {
+    color: #555 !important;
+}
+
+#fangcoin-app .fc-flow-label {
+    color: #555 !important;
+}
+
+#fangcoin-app .fc-flow-period {
+    color: #444 !important;
+}
+
+#fangcoin-app .fc-scanner-label {
+    color: #888 !important;
+}
+
+#fangcoin-app .fc-scanner-close {
+    color: #888 !important;
+    background: none !important;
+    border: none !important;
+}
+
+#fangcoin-app .fc-fmt-label {
+    color: #e8e8e8 !important;
+}
+
+#fangcoin-app .fc-fmt-sub {
+    color: #555 !important;
+}
+
+#fangcoin-app .fc-info-icon {
+    background: #1a1a2e !important;
+    color: #818cf8 !important;
+}
+
+#fangcoin-app a {
+    color: #818cf8 !important;
+}
+
+#fangcoin-app .fc-info-box {
+    background: #0d0d0d !important;
+}
+
+#fangcoin-app .fc-scanner-wrap {
+    background: #0d0d0d !important;
+}
+
+/* QR Scanner */
+.fc-scanner-wrap {
+    background: #0d0d0d;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+
+.fc-scanner-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+}
+
+.fc-scanner-label {
+    font-size: 13px;
+    color: #888;
+}
+
+.fc-scanner-close {
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0 4px;
+    line-height: 1;
+}
+
+.fc-scanner {
+    width: 100%;
+    min-height: 240px;
+}
+
+.fc-scan-btn {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    background: #1a1a1a;
+    border: 0.5px solid #2a2a2a;
+    border-radius: 6px;
+    color: #888;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.fc-scan-btn:hover {
+    color: #e8e8e8;
+    background: #222;
+}
+
+/* Wallet address card - high specificity to beat theme overrides */
+#fangcoin-app .fc-address-card,
+#fangcoin-app .fc-address-card.fc-card {
+    background: #0d0d0d !important;
+    color: #e8e8e8 !important;
+    margin-bottom: 20px;
+}
+
+#fangcoin-app .fc-address-card *:not(.fc-address-copy) {
+    background: transparent !important;
+    color: inherit !important;
+}
+
+#fangcoin-app .fc-address-card .fc-card-title {
+    color: #ccc !important;
+}
+
+.fc-address-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.fc-address-qr {
+    flex-shrink: 0;
+}
+
+.fc-address-info {
+    flex: 1;
+}
+
+.fc-address-code {
+    display: block;
+    font-size: 18px;
+    color: #fff !important;
+    font-family: "SF Mono", "Consolas", "Monaco", monospace;
+    letter-spacing: 1.5px;
+    margin-bottom: 8px;
+    word-break: break-all;
+    font-weight: 600;
+}
+
+.fc-address-help {
+    font-size: 12px;
+    color: #888 !important;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.fc-address-copy {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    margin-top: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    background: #1a1a1a;
+    border: 0.5px solid #2a2a2a;
+    border-radius: 6px;
+    color: #888;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.fc-address-copy:hover {
+    color: #e8e8e8;
+    background: #222;
+}
+
+.fc-address-copy.copied {
+    color: #4ade80;
+    border-color: #2a4a2a;
+}
+
+.fc-address-status {
+    min-height: 20px;
+    margin-top: 6px;
+}
+
+/* ==========================================================================
+   Desktop: sidebar layout (min 768px)
+   ========================================================================== */
+
+@media (min-width: 768px) {
+    .fc-wrap {
+        flex-direction: row;
+        min-height: 80vh;
+    }
+
+    .fc-sidebar {
+        width: 220px;
+        flex-shrink: 0;
+        padding: 20px 16px;
+        display: flex;
+        flex-direction: column;
+        border-right: 0.5px solid #1a1a1a;
+        border-bottom: none;
+    }
+
+    .fc-btns {
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .fc-flow {
+        margin-top: auto;
+    }
+
+    .fc-body {
+        flex: 1;
+        border-top: none;
+        padding: 24px;
+    }
+
+    .fc-two-col {
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+    }
+
+    .fc-send-row {
+        grid-template-columns: 1fr 140px;
+        gap: 12px;
+    }
+
+    .fc-card {
+        padding: 16px 20px;
+    }
+}
+
+/* ==========================================================================
+   Mobile: stacked layout
+   ========================================================================== */
+
+@media (max-width: 767px) {
+    .fc-bal-coin {
+        display: flex;
+        width: 48px;
+        height: 48px;
+        background: #1a1a1a;
+        border: 1.5px solid #2a2a2a;
+        border-radius: 50%;
+        align-items: center;
+        justify-content: center;
+        font-family: "Arial Black", Arial, sans-serif;
+        font-weight: 900;
+        font-size: 15px;
+        letter-spacing: -2px;
+        color: #e8e8e8;
+        margin: 0 auto 10px;
+    }
+
+    .fc-bal-num {
+        font-size: 36px;
+    }
+
+    .fc-bal-label {
+        font-size: 13px;
+        color: #666;
+    }
+}
+
+/* ==========================================================================
+   ST Dashboard – Light theme (unchanged)
+   ========================================================================== */
+
+.fc-st-app {
+    max-width: 720px;
+    margin: 0 auto;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #222;
+}
+
+.fc-stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.fc-stat-card { background: #f8f8f8; border-radius: 8px; padding: 16px; }
+.fc-stat-label { font-size: 12px; color: #888; margin-bottom: 4px; }
+.fc-stat-value { font-size: 24px; font-weight: 700; color: #1a1a1a; }
+
+.fc-st-section {
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.fc-st-section-title { font-size: 15px; font-weight: 600; color: #1a1a1a; margin: 0 0 12px; }
+.fc-st-help { font-size: 13px; color: #666; margin: 0 0 16px; line-height: 1.5; }
+
+.fc-st-form-group { margin-bottom: 12px; }
+.fc-st-form-group label { display: block; font-size: 13px; font-weight: 500; color: #555; margin-bottom: 4px; }
+.fc-st-form-group input,
+.fc-st-form-group select { width: 100%; padding: 8px 12px; font-size: 14px; border: 1px solid #ccc; border-radius: 6px; background: #fff; color: #222; box-sizing: border-box; }
+
+.fc-st-form-row { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; }
+
+.fc-st-btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; font-size: 14px; font-weight: 500; border-radius: 6px; cursor: pointer; border: none; }
+.fc-st-btn-primary { background: #1a1a1a; color: #fff; }
+.fc-st-btn-secondary { background: #fff; color: #1a1a1a; border: 1px solid #ccc; }
+
+.fc-filter-row { display: flex; gap: 4px; margin-bottom: 12px; }
+.fc-filter-btn { padding: 6px 14px; font-size: 12px; font-weight: 500; border: 1px solid #ddd; border-radius: 6px; background: #fff; color: #666; cursor: pointer; }
+.fc-filter-btn.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+
+.fc-wallet-list { border: 1px solid #e5e5e5; border-radius: 8px; overflow: hidden; }
+.fc-wallet-row { display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-bottom: 1px solid #f0f0f0; }
+.fc-wallet-row:last-child { border-bottom: none; }
+.fc-wallet-avatar { width: 32px; height: 32px; border-radius: 50%; background: #1a1a1a; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; flex-shrink: 0; }
+.fc-wallet-avatar-spc { background: #555; }
+.fc-wallet-info { flex: 1; min-width: 0; }
+.fc-wallet-name { font-size: 14px; font-weight: 500; color: #222; margin: 0; }
+.fc-wallet-clan { font-size: 12px; color: #999; margin: 0; }
+.fc-wallet-balance { font-size: 16px; font-weight: 600; color: #1a1a1a; }
+
+/* Toggle controls */
+.fc-st-toggles {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.fc-st-toggle {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+    padding: 10px 12px;
+    background: #f8f8f8;
+    border-radius: 6px;
+    border: 1px solid #e5e5e5;
+    flex-wrap: wrap;
+}
+
+.fc-st-toggle input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-top: 1px;
+    flex-shrink: 0;
+    accent-color: #1a1a1a;
+}
+
+.fc-st-toggle-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #222;
+    flex: 1;
+}
+
+.fc-st-toggle-help {
+    font-size: 12px;
+    color: #888;
+    line-height: 1.4;
+    width: 100%;
+    padding-left: 28px;
+    margin-top: 2px;
+}
+
+.fc-st-toggle.disabled {
+    background: #fff3f3;
+    border-color: #fecaca;
+}
+
+.fc-st-toggle.disabled .fc-st-toggle-label {
+    color: #b91c1c;
+}
+
+@media (max-width: 600px) {
+    .fc-stats-row { grid-template-columns: repeat(2, 1fr); }
+    .fc-st-form-row { flex-direction: column; }
+}
+
+/* ==========================================================================
+   ST Dashboard – Theme override layer
+   ID-scoped !important to beat aggressive WordPress themes
+   ========================================================================== */
+
+#fangcoin-st.fc-st-app {
+    color: #222 !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+
+#fangcoin-st .fc-st-section {
+    background: #fff !important;
+    border: 1px solid #e5e5e5 !important;
+    border-radius: 8px !important;
+    color: #222 !important;
+}
+
+#fangcoin-st .fc-st-section-title {
+    color: #1a1a1a !important;
+}
+
+#fangcoin-st .fc-st-help {
+    color: #666 !important;
+}
+
+#fangcoin-st .fc-stat-card {
+    background: #f8f8f8 !important;
+    border-radius: 8px !important;
+}
+
+#fangcoin-st .fc-stat-label {
+    color: #888 !important;
+}
+
+#fangcoin-st .fc-stat-value {
+    color: #1a1a1a !important;
+}
+
+#fangcoin-st .fc-st-form-group label {
+    color: #555 !important;
+}
+
+#fangcoin-st .fc-st-form-group input,
+#fangcoin-st .fc-st-form-group select {
+    background: #fff !important;
+    color: #222 !important;
+    border: 1px solid #ccc !important;
+    border-radius: 6px !important;
+    padding: 8px 12px !important;
+}
+
+#fangcoin-st .fc-st-btn-primary {
+    background: #1a1a1a !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+}
+
+#fangcoin-st .fc-st-btn-secondary {
+    background: #fff !important;
+    color: #1a1a1a !important;
+    border: 1px solid #ccc !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+}
+
+#fangcoin-st .fc-filter-btn {
+    background: #fff !important;
+    color: #666 !important;
+    border: 1px solid #ddd !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+}
+
+#fangcoin-st .fc-filter-btn.active {
+    background: #1a1a1a !important;
+    color: #fff !important;
+    border-color: #1a1a1a !important;
+}
+
+#fangcoin-st .fc-wallet-list {
+    border: 1px solid #e5e5e5 !important;
+    border-radius: 8px !important;
+    background: #fff !important;
+}
+
+#fangcoin-st .fc-wallet-row {
+    border-bottom: 1px solid #f0f0f0 !important;
+    background: #fff !important;
+}
+
+#fangcoin-st .fc-wallet-row:last-child {
+    border-bottom: none !important;
+}
+
+#fangcoin-st .fc-wallet-name {
+    color: #222 !important;
+}
+
+#fangcoin-st .fc-wallet-clan {
+    color: #999 !important;
+}
+
+#fangcoin-st .fc-wallet-balance {
+    color: #1a1a1a !important;
+}
+
+#fangcoin-st .fc-wallet-avatar {
+    background: #1a1a1a !important;
+    color: #fff !important;
+}
+
+#fangcoin-st .fc-wallet-avatar-spc {
+    background: #555 !important;
+}
+
+#fangcoin-st .fc-st-toggle {
+    background: #f8f8f8 !important;
+    border: 1px solid #e5e5e5 !important;
+    border-radius: 6px !important;
+}
+
+#fangcoin-st .fc-st-toggle.disabled {
+    background: #fff3f3 !important;
+    border-color: #fecaca !important;
+}
+
+#fangcoin-st .fc-st-toggle-label {
+    color: #222 !important;
+}
+
+#fangcoin-st .fc-st-toggle.disabled .fc-st-toggle-label {
+    color: #b91c1c !important;
+}
+
+#fangcoin-st .fc-st-toggle-help {
+    color: #888 !important;
+}
+
+#fangcoin-st .fc-st-toggle input[type="checkbox"] {
+    accent-color: #1a1a1a !important;
+}
+
+#fangcoin-st .fc-msg-success {
+    color: #16a34a !important;
+}
+
+#fangcoin-st .fc-msg-error {
+    color: #dc2626 !important;
+}

@@ -1,0 +1,41 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get version from tag
+        id: version
+        run: echo "version=${GITHUB_REF#refs/tags/v}" >> "$GITHUB_OUTPUT"
+
+      - name: Build plugin zip
+        run: |
+          mkdir -p build/cities-of-darkness-fangcoin
+          rsync -a \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='.gitignore' \
+            --exclude='build' \
+            --exclude='node_modules' \
+            --exclude='vendor' \
+            --exclude='*.zip' \
+            ./ build/cities-of-darkness-fangcoin/
+          cd build
+          zip -r ../cities-of-darkness-fangcoin-${{ steps.version.outputs.version }}.zip cities-of-darkness-fangcoin/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: cities-of-darkness-fangcoin-${{ steps.version.outputs.version }}.zip
+          generate_release_notes: true

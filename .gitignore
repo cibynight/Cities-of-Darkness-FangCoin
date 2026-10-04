@@ -1,0 +1,22 @@
+# WordPress
+wp-config.php
+wp-content/uploads/
+wp-content/upgrade/
+
+# Dependencies
+node_modules/
+vendor/
+
+# Build artifacts
+*.zip
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
