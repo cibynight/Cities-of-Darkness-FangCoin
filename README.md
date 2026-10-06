@@ -2,7 +2,7 @@
 
 A fictional cryptocurrency system for the Cities of Darkness LARP chronicle. Provides digital wallets, peer-to-peer transfers, and QR-coded physical coins backed by real poker chips.
 
-**Version:** 1.4.2
+**Version:** 1.4.3
 **Requires:** Cities of Darkness Chronicle Tools 3.6.440+
 **Requires PHP:** 8.0+
 **Requires WordPress:** 6.0+

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.4.3 - 2026-10-06
+
+### Added
+- `Requires Plugins` header declaring the dependency on Cities of Darkness Chronicle Tools. WordPress now shows the dependency on the Plugins screen and prevents activation if Chronicle Tools is not installed.
+
 ## 1.4.2 - 2026-10-04
 
 ### Changed

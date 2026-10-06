@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Cities of Darkness - FangCoin
  * Description: A fictional cryptocurrency system for the Cities of Darkness LARP chronicle. Provides digital wallets, peer-to-peer transfers, and QR-coded physical coins.
- * Version: 1.4.2
+ * Version: 1.4.3
  * Author: Cities of Darkness
  * Requires at least: 6.0
  * Requires PHP: 8.0
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'FANGCOIN_VERSION', '1.4.2' );
+define( 'FANGCOIN_VERSION', '1.4.3' );
 define( 'FANGCOIN_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'FANGCOIN_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
