@@ -6,6 +6,7 @@
  * Author: Cities of Darkness
  * Requires at least: 6.0
  * Requires PHP: 8.0
+ * Requires Plugins: cities-of-darkness-chronicle-tools
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
