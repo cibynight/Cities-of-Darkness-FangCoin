@@ -493,19 +493,28 @@ class FangCoin_DB {
     /**
      * Get chronicle settings for FangCoin scoping.
      * Returns [ 'allow_incoming' => bool, 'allow_outgoing' => bool ].
-     * Defaults to true (open) if no setting exists.
+     *
+     * If the ST has explicitly saved settings for this chronicle, those are
+     * returned as-is.  Otherwise, the default depends on whether Chronicle
+     * Tools marks the chronicle as an Event or One-Shot: event/one-shot
+     * chronicles default to a sealed economy (both toggles off); regular
+     * chronicles default to an open economy (both toggles on).
      */
     public static function get_chronicle_settings( int $chronicle_id ): array {
         if ( ! $chronicle_id ) {
             return [ 'allow_incoming' => true, 'allow_outgoing' => true ];
         }
 
-        $settings = get_option( 'fangcoin_chronicle_settings', [] );
+        $settings     = get_option( 'fangcoin_chronicle_settings', [] );
         $chr_settings = $settings[ $chronicle_id ] ?? [];
 
+        // Determine the correct default: sealed for event/one-shot, open otherwise.
+        $is_event     = (bool) get_post_meta( $chronicle_id, '_lotn_chr_is_event_or_one_shot', true );
+        $default_open = ! $is_event;
+
         return [
-            'allow_incoming' => $chr_settings['allow_incoming'] ?? true,
-            'allow_outgoing' => $chr_settings['allow_outgoing'] ?? true,
+            'allow_incoming' => $chr_settings['allow_incoming'] ?? $default_open,
+            'allow_outgoing' => $chr_settings['allow_outgoing'] ?? $default_open,
         ];
     }
 

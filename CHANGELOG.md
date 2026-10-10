@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.4.4 - 2026-10-09
+
+### Changed
+- **Event/One-Shot chronicles now default to a sealed economy.** When a chronicle is marked as "Event or One Shot" in Chronicle Tools, the "Allow incoming FangCoin" and "Allow outgoing FangCoin" toggles default to off instead of on. Storytellers can still override this by toggling the settings manually on the ST Dashboard. Chronicles that already have explicitly saved settings are not affected.
+
 ## 1.4.3 - 2026-10-06
 
 ### Added
