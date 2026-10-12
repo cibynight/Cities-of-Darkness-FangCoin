@@ -2,8 +2,13 @@
 /**
  * FangCoin_Privacy -- GDPR / legal-compliance data tools
  *
- * Registers with WordPress's built-in privacy framework
- * (Tools > Export/Erase Personal Data).
+ * Hooks into Chronicle Tools' privacy framework to cover FangCoin's
+ * three custom tables in data exports and deletions.
+ *
+ * Chronicle Tools fires three hooks:
+ *  - lotn_privacy_export_data      (filter) — JSON download + WP export
+ *  - lotn_privacy_wp_export_items  (filter) — WP export formatted items
+ *  - lotn_privacy_after_delete     (action) — admin delete + WP eraser
  *
  * Data covered:
  *  - {prefix}fangcoin_wallets        (tied to user's characters)
@@ -20,28 +25,14 @@ class FangCoin_Privacy {
     // -- Bootstrap -------------------------------------------------------
 
     public static function init(): void {
-        // WordPress built-in privacy framework (Tools > Export/Erase Personal Data).
-        add_filter( 'wp_privacy_personal_data_exporters', [ __CLASS__, 'register_exporter' ] );
-        add_filter( 'wp_privacy_personal_data_erasers',   [ __CLASS__, 'register_eraser'   ] );
+        // 1. Append raw FangCoin data to the export payload (JSON download + WP export source).
+        add_filter( 'lotn_privacy_export_data', [ __CLASS__, 'merge_export_data' ], 10, 2 );
 
-    }
+        // 2. Format FangCoin data as WP export items (Tools > Export Personal Data).
+        add_filter( 'lotn_privacy_wp_export_items', [ __CLASS__, 'format_wp_export_items' ], 10, 3 );
 
-    // -- WP Privacy framework registration -------------------------------
-
-    public static function register_exporter( array $exporters ): array {
-        $exporters['fangcoin'] = [
-            'exporter_friendly_name' => __( 'Cities of Darkness: FangCoin', 'fangcoin' ),
-            'callback'               => [ __CLASS__, 'wp_export_callback' ],
-        ];
-        return $exporters;
-    }
-
-    public static function register_eraser( array $erasers ): array {
-        $erasers['fangcoin'] = [
-            'eraser_friendly_name' => __( 'Cities of Darkness: FangCoin', 'fangcoin' ),
-            'callback'             => [ __CLASS__, 'wp_erase_callback' ],
-        ];
-        return $erasers;
+        // 3. Delete FangCoin data on admin delete button + WP eraser.
+        add_action( 'lotn_privacy_after_delete', [ __CLASS__, 'delete_user_data' ], 10, 1 );
     }
 
     // -- Helpers ----------------------------------------------------------
@@ -135,77 +126,41 @@ class FangCoin_Privacy {
         ];
     }
 
-    // -- Data deletion ----------------------------------------------------
+    // -- Chronicle Tools hook callbacks -----------------------------------
 
     /**
-     * Hard-delete all FangCoin data for a user.
+     * Merge raw FangCoin data into the export payload.
      *
-     * @param int $user_id WordPress user ID.
-     * @return array { wallets: int, transactions: int, codes: int }
+     * Hooked to: lotn_privacy_export_data (filter)
+     * Fires from: JSON download + WP export.
+     *
+     * @param array $data    Accumulated export data from Chronicle Tools + other plugins.
+     * @param int   $user_id WordPress user ID being exported.
+     * @return array Data with FangCoin data merged under the 'fangcoin' key.
      */
-    public static function delete_user_data( int $user_id ): array {
-        global $wpdb;
-
-        $wallet_ids = self::get_user_wallet_ids( $user_id );
-
-        if ( empty( $wallet_ids ) ) {
-            return [ 'wallets' => 0, 'transactions' => 0, 'codes' => 0 ];
-        }
-
-        $wallets_table      = $wpdb->prefix . 'fangcoin_wallets';
-        $transactions_table = $wpdb->prefix . 'fangcoin_transactions';
-        $codes_table        = $wpdb->prefix . 'fangcoin_codes';
-        $placeholders       = self::in_placeholders( $wallet_ids );
-
-        // Delete in dependency order: transactions, codes, then wallets.
-
-        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-        $tx_deleted = (int) $wpdb->query( $wpdb->prepare(
-            "DELETE FROM {$transactions_table}
-             WHERE from_wallet_id IN ({$placeholders})
-                OR to_wallet_id IN ({$placeholders})",
-            ...array_merge( $wallet_ids, $wallet_ids )
-        ) );
-
-        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-        $codes_deleted = (int) $wpdb->query( $wpdb->prepare(
-            "DELETE FROM {$codes_table}
-             WHERE source_wallet_id IN ({$placeholders})
-                OR redeemed_by_wallet_id IN ({$placeholders})",
-            ...array_merge( $wallet_ids, $wallet_ids )
-        ) );
-
-        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-        $wallets_deleted = (int) $wpdb->query( $wpdb->prepare(
-            "DELETE FROM {$wallets_table} WHERE id IN ({$placeholders})",
-            ...$wallet_ids
-        ) );
-
-        return [
-            'wallets'      => $wallets_deleted,
-            'transactions' => $tx_deleted,
-            'codes'        => $codes_deleted,
-        ];
+    public static function merge_export_data( array $data, int $user_id ): array {
+        $data['fangcoin'] = self::collect_user_data( $user_id );
+        return $data;
     }
 
-    // -- WP Privacy callbacks (Tools > Export/Erase Personal Data) --------
-
     /**
-     * WP Personal Data Exporter callback.
+     * Format FangCoin data as WordPress personal-data export items.
+     *
+     * Hooked to: lotn_privacy_wp_export_items (filter)
+     * Fires from: WP export only (Tools > Export Personal Data).
+     *
+     * @param array $items   Accumulated WP export items.
+     * @param array $data    Full export data (including $data['fangcoin'] from our filter above).
+     * @param int   $user_id WordPress user ID being exported.
+     * @return array Items with FangCoin wallets, transactions, and codes appended.
      */
-    public static function wp_export_callback( string $email_address, int $page = 1 ): array {
-        $user = get_user_by( 'email', $email_address );
-        if ( ! $user ) {
-            return [ 'data' => [], 'done' => true ];
-        }
+    public static function format_wp_export_items( array $items, array $data, int $user_id ): array {
+        $fc = $data['fangcoin'] ?? [];
 
-        $data         = self::collect_user_data( $user->ID );
-        $export_items = [];
-
-        foreach ( $data['wallets'] as $w ) {
-            $export_items[] = [
+        foreach ( $fc['wallets'] ?? [] as $w ) {
+            $items[] = [
                 'group_id'    => 'fangcoin_wallets',
-                'group_label' => __( 'FangCoin - Wallets', 'fangcoin' ),
+                'group_label' => __( 'FangCoin – Wallets', 'fangcoin' ),
                 'item_id'     => 'fangcoin_wallet_' . $w['id'],
                 'data'        => [
                     [ 'name' => __( 'Character',  'fangcoin' ), 'value' => esc_html( $w['character_name'] ) ],
@@ -216,10 +171,10 @@ class FangCoin_Privacy {
             ];
         }
 
-        foreach ( $data['transactions'] as $tx ) {
-            $export_items[] = [
+        foreach ( $fc['transactions'] ?? [] as $tx ) {
+            $items[] = [
                 'group_id'    => 'fangcoin_transactions',
-                'group_label' => __( 'FangCoin - Transactions', 'fangcoin' ),
+                'group_label' => __( 'FangCoin – Transactions', 'fangcoin' ),
                 'item_id'     => 'fangcoin_tx_' . $tx['id'],
                 'data'        => [
                     [ 'name' => __( 'Type',         'fangcoin' ), 'value' => esc_html( $tx['type'] ) ],
@@ -232,10 +187,10 @@ class FangCoin_Privacy {
             ];
         }
 
-        foreach ( $data['codes'] as $c ) {
-            $export_items[] = [
+        foreach ( $fc['codes'] ?? [] as $c ) {
+            $items[] = [
                 'group_id'    => 'fangcoin_codes',
-                'group_label' => __( 'FangCoin - QR Codes', 'fangcoin' ),
+                'group_label' => __( 'FangCoin – QR Codes', 'fangcoin' ),
                 'item_id'     => 'fangcoin_code_' . $c['id'],
                 'data'        => [
                     [ 'name' => __( 'Code',        'fangcoin' ), 'value' => esc_html( $c['code'] ) ],
@@ -246,34 +201,55 @@ class FangCoin_Privacy {
             ];
         }
 
-        return [ 'data' => $export_items, 'done' => true ];
+        return $items;
     }
+
+    // -- Data deletion ----------------------------------------------------
 
     /**
-     * WP Personal Data Eraser callback.
+     * Hard-delete all FangCoin data for a user.
+     *
+     * Hooked to: lotn_privacy_after_delete (action)
+     * Fires from: admin delete button + WP eraser.
+     *
+     * @param int $user_id WordPress user ID whose data is being deleted.
      */
-    public static function wp_erase_callback( string $email_address, int $page = 1 ): array {
-        $user = get_user_by( 'email', $email_address );
-        if ( ! $user ) {
-            return [ 'items_removed' => false, 'items_retained' => false, 'messages' => [], 'done' => true ];
+    public static function delete_user_data( int $user_id ): void {
+        global $wpdb;
+
+        $wallet_ids = self::get_user_wallet_ids( $user_id );
+
+        if ( empty( $wallet_ids ) ) {
+            return;
         }
 
-        $result = self::delete_user_data( $user->ID );
-        $total  = $result['wallets'] + $result['transactions'] + $result['codes'];
+        $wallets_table      = $wpdb->prefix . 'fangcoin_wallets';
+        $transactions_table = $wpdb->prefix . 'fangcoin_transactions';
+        $codes_table        = $wpdb->prefix . 'fangcoin_codes';
+        $placeholders       = self::in_placeholders( $wallet_ids );
 
-        return [
-            'items_removed'  => $total > 0,
-            'items_retained' => false,
-            'messages'       => [
-                sprintf(
-                    __( 'Deleted %1$d wallet(s), %2$d transaction(s), and %3$d QR code(s).', 'fangcoin' ),
-                    $result['wallets'],
-                    $result['transactions'],
-                    $result['codes']
-                ),
-            ],
-            'done' => true,
-        ];
+        // Delete in dependency order: transactions, codes, then wallets.
+
+        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        $wpdb->query( $wpdb->prepare(
+            "DELETE FROM {$transactions_table}
+             WHERE from_wallet_id IN ({$placeholders})
+                OR to_wallet_id IN ({$placeholders})",
+            ...array_merge( $wallet_ids, $wallet_ids )
+        ) );
+
+        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        $wpdb->query( $wpdb->prepare(
+            "DELETE FROM {$codes_table}
+             WHERE source_wallet_id IN ({$placeholders})
+                OR redeemed_by_wallet_id IN ({$placeholders})",
+            ...array_merge( $wallet_ids, $wallet_ids )
+        ) );
+
+        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        $wpdb->query( $wpdb->prepare(
+            "DELETE FROM {$wallets_table} WHERE id IN ({$placeholders})",
+            ...$wallet_ids
+        ) );
     }
-
 }

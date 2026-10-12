@@ -1,9 +1,14 @@
 # Changelog
 
+## 1.4.8 - 2026-10-12
+
+### Changed
+- **Full Chronicle Tools privacy integration.** FangCoin now hooks into all three Chronicle Tools privacy hooks instead of registering separately with the WordPress privacy framework. The admin panel "Download Data (JSON)" button includes FangCoin wallets, transactions, and QR codes under a `fangcoin` key. The "Delete All Plugin Data" button and WP's built-in eraser both hard-delete all FangCoin data. WP's "Export Personal Data" includes formatted FangCoin items. Requires Chronicle Tools with the `lotn_privacy_export_data`, `lotn_privacy_wp_export_items`, and `lotn_privacy_after_delete` hooks.
+
 ## 1.4.7 - 2026-10-12
 
 ### Removed
-- Removed Chronicle Tools admin panel hook listeners (`lotn_privacy_export_data`, `lotn_privacy_after_delete`) that were hooking into extension points that do not yet exist in Chronicle Tools. The WordPress built-in privacy framework (Tools > Export/Erase Personal Data) continues to cover all FangCoin data.
+- Removed Chronicle Tools admin panel hook listeners that were hooking into extension points that did not yet exist in Chronicle Tools.
 
 ## 1.4.6 - 2026-10-12
 
