@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.4.5 - 2026-10-12
+
+### Added
+- **Privacy policy compliance.** FangCoin now registers with WordPress's built-in privacy framework (Tools > Export Personal Data / Erase Personal Data). The exporter includes all wallets, transactions, and QR codes tied to a user's characters. The eraser hard-deletes the same data. This mirrors the privacy support added in Chronicle Tools and ensures FangCoin data is covered by data export and erasure requests.
+
 ## 1.4.4 - 2026-10-09
 
 ### Changed
