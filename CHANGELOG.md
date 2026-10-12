@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.4.6 - 2026-10-12
+
+### Added
+- **Chronicle Tools admin panel integration.** The "Download Data (JSON)" and "Delete All Plugin Data" buttons on Chronicle Tools' User Privacy tab now include FangCoin data. Download exports wallets, transactions, and QR codes under a `fangcoin` key. Delete removes all FangCoin data for the user alongside their Chronicle Tools data. Requires Chronicle Tools 3.6.507+ (with the `lotn_privacy_export_data` filter and `lotn_privacy_after_delete` action).
+
+### Changed
+- Refactored `FangCoin_Privacy` to use shared `collect_user_data()` and `delete_user_data()` methods, used by both the WordPress privacy framework and the Chronicle Tools admin panel hooks.
+
 ## 1.4.5 - 2026-10-12
 
 ### Added
