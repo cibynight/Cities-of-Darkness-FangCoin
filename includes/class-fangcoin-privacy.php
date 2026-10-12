@@ -2,9 +2,8 @@
 /**
  * FangCoin_Privacy -- GDPR / legal-compliance data tools
  *
- * Registers with:
- *  1. WordPress's built-in privacy framework (Tools > Export/Erase Personal Data)
- *  2. Chronicle Tools' admin panel hooks (Download Data / Delete All Plugin Data)
+ * Registers with WordPress's built-in privacy framework
+ * (Tools > Export/Erase Personal Data).
  *
  * Data covered:
  *  - {prefix}fangcoin_wallets        (tied to user's characters)
@@ -25,9 +24,6 @@ class FangCoin_Privacy {
         add_filter( 'wp_privacy_personal_data_exporters', [ __CLASS__, 'register_exporter' ] );
         add_filter( 'wp_privacy_personal_data_erasers',   [ __CLASS__, 'register_eraser'   ] );
 
-        // Chronicle Tools admin panel hooks (Download Data / Delete All Plugin Data buttons).
-        add_filter( 'lotn_privacy_export_data',  [ __CLASS__, 'admin_panel_export' ], 10, 2 );
-        add_action( 'lotn_privacy_after_delete',  [ __CLASS__, 'admin_panel_delete' ], 10, 1 );
     }
 
     // -- WP Privacy framework registration -------------------------------
@@ -280,30 +276,4 @@ class FangCoin_Privacy {
         ];
     }
 
-    // -- Chronicle Tools admin panel callbacks ----------------------------
-
-    /**
-     * Merge FangCoin data into Chronicle Tools' admin panel JSON export.
-     *
-     * Hooked to: lotn_privacy_export_data (filter)
-     *
-     * @param array $data    Chronicle Tools' collected data.
-     * @param int   $user_id WordPress user ID being exported.
-     * @return array Data with FangCoin data merged under the 'fangcoin' key.
-     */
-    public static function admin_panel_export( array $data, int $user_id ): array {
-        $data['fangcoin'] = self::collect_user_data( $user_id );
-        return $data;
-    }
-
-    /**
-     * Delete FangCoin data when Chronicle Tools' admin panel erases a user.
-     *
-     * Hooked to: lotn_privacy_after_delete (action)
-     *
-     * @param int $user_id WordPress user ID whose data was deleted.
-     */
-    public static function admin_panel_delete( int $user_id ): void {
-        self::delete_user_data( $user_id );
-    }
 }
