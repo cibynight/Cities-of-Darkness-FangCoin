@@ -117,18 +117,95 @@ class FangCoin_REST {
         return current_user_can( 'manage_options' ) || current_user_can( 'lotn_storyteller' );
     }
 
+    /**
+     * Get the chronicle IDs this user is Storyteller for (Head ST or Co-ST).
+     *
+     * Mirrors Chronicle Tools' own logic: Head ST = post_author of the
+     * lotn_chronicle CPT, Co-ST = listed in _lotn_chr_co_sts meta.
+     * No admin-sees-everything fallback: even admins are scoped to
+     * chronicles they actually storytell.
+     *
+     * @return int[] Chronicle post IDs.
+     */
+    private static function get_st_chronicle_ids( int $user_id = 0 ): array {
+        if ( ! $user_id ) {
+            $user_id = get_current_user_id();
+        }
+
+        // Chronicles where this user is Head ST (post_author).
+        $head_st = get_posts( [
+            'post_type'      => 'lotn_chronicle',
+            'author'         => $user_id,
+            'post_status'    => 'publish',
+            'posts_per_page' => -1,
+            'fields'         => 'ids',
+            'meta_query'     => [ [ 'key' => '_lotn_chr_validated', 'value' => '1' ] ],
+        ] );
+
+        // Chronicles where this user is Co-ST.
+        $co_st = get_posts( [
+            'post_type'      => 'lotn_chronicle',
+            'post_status'    => 'publish',
+            'posts_per_page' => -1,
+            'fields'         => 'ids',
+            'meta_query'     => [
+                [ 'key' => '_lotn_chr_validated', 'value' => '1' ],
+                [ 'key' => '_lotn_chr_co_sts', 'value' => ':' . $user_id . ';', 'compare' => 'LIKE' ],
+            ],
+        ] );
+
+        return array_map( 'intval', array_unique( array_merge( (array) $head_st, (array) $co_st ) ) );
+    }
+
+    /**
+     * Check if the current user is ST for the chronicle a character belongs to.
+     */
+    private static function is_st_for_character( int $character_id ): bool {
+        $post = get_post( $character_id );
+        if ( ! $post ) {
+            return false;
+        }
+
+        // Determine the character's chronicle.
+        if ( $post->post_type === 'lotn_spc' ) {
+            $chr_id = (int) get_post_meta( $character_id, '_lotn_spc_chronicle_id', true );
+        } else {
+            $chr_id = (int) get_post_meta( $character_id, '_lotn_home_chronicle_id', true );
+        }
+
+        if ( ! $chr_id ) {
+            return false;
+        }
+
+        return in_array( $chr_id, self::get_st_chronicle_ids(), true );
+    }
+
     public static function can_access_character( \WP_REST_Request $request ): bool {
         if ( ! is_user_logged_in() ) return false;
-        if ( self::is_storyteller() ) return true;
         $character_id = (int) $request->get_param( 'character_id' );
         $post = get_post( $character_id );
-        return $post && (int) $post->post_author === get_current_user_id();
+        if ( ! $post ) return false;
+
+        // Owner can always access their own characters.
+        if ( (int) $post->post_author === get_current_user_id() ) return true;
+
+        // STs can access characters in their chronicles.
+        if ( self::is_storyteller() ) return self::is_st_for_character( $character_id );
+
+        return false;
     }
 
     private static function user_owns_character( int $character_id ): bool {
-        if ( self::is_storyteller() ) return true;
         $post = get_post( $character_id );
-        return $post && (int) $post->post_author === get_current_user_id();
+        if ( ! $post ) return false;
+
+        // Owner always passes.
+        if ( (int) $post->post_author === get_current_user_id() ) return true;
+
+        // STs can act as characters in their chronicles.
+        if ( self::is_storyteller() ) return self::is_st_for_character( $character_id );
+
+        return false;
     }
 
     /**
@@ -172,20 +249,12 @@ class FangCoin_REST {
             $user_id
         ) );
 
-        // Storytellers also get published SPCs, scoped to the same chronicles as their PCs.
+        // Storytellers also get published SPCs, scoped to chronicles they ST for.
         if ( self::is_storyteller() ) {
-            // Collect chronicle IDs from this user's PCs.
-            $my_chronicle_ids = [];
-            foreach ( $characters as $char ) {
-                $cid = (int) get_post_meta( $char->ID, '_lotn_home_chronicle_id', true );
-                if ( $cid ) {
-                    $my_chronicle_ids[ $cid ] = true;
-                }
-            }
+            $st_chronicle_ids = self::get_st_chronicle_ids( $user_id );
 
-            if ( ! empty( $my_chronicle_ids ) ) {
-                $placeholders = implode( ',', array_fill( 0, count( $my_chronicle_ids ), '%d' ) );
-                $chronicle_values = array_keys( $my_chronicle_ids );
+            if ( ! empty( $st_chronicle_ids ) ) {
+                $placeholders = implode( ',', array_fill( 0, count( $st_chronicle_ids ), '%d' ) );
 
                 $spcs = $wpdb->get_results( $wpdb->prepare(
                     "SELECT p.ID, p.post_title, p.post_type
@@ -196,17 +265,8 @@ class FangCoin_REST {
                      WHERE p.post_type = 'lotn_spc'
                        AND p.post_status = 'publish'
                      ORDER BY p.post_title ASC",
-                    ...$chronicle_values
+                    ...$st_chronicle_ids
                 ) );
-            } elseif ( current_user_can( 'manage_options' ) ) {
-                // Site admins with no PCs: fall back to all SPCs.
-                $spcs = $wpdb->get_results(
-                    "SELECT p.ID, p.post_title, p.post_type
-                     FROM {$wpdb->posts} p
-                     WHERE p.post_type = 'lotn_spc'
-                       AND p.post_status = 'publish'
-                     ORDER BY p.post_title ASC"
-                );
             } else {
                 $spcs = [];
             }

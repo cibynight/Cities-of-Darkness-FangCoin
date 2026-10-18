@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.4.9 - 2026-10-18
+
+### Fixed
+- **Admins could act as SPCs from any chronicle.** The player-facing wallet list and character ownership checks now scope SPC access to chronicles the user actually storytells (Head ST or Co-ST), matching Chronicle Tools' own `_lotn_chr_co_sts` and `post_author` logic. Previously, admins with `manage_options` could see and act as SPCs from all chronicles, and any user with the `lotn_storyteller` capability could act as any character regardless of chronicle.
+
 ## 1.4.8 - 2026-10-12
 
 ### Changed
